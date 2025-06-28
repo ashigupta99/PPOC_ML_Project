@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📰 Fake News Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📰 Fake Disaster News Detector</h1>
+        <form method="POST" action="/predict">
+            <textarea name="news" placeholder="Enter a Disaster-related news headline or sentence...">{{ input_text or "" }}</textarea><br>
+            <button type="submit">Check</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result 
+            {% if 'Fake' in prediction %}
+                fake
+            {% elif 'Real' in prediction %}
+                real
+            {% endif %}">
+            {{ prediction }}
+        </div>
+        {% endif %}
+
+        {% if history %}
+        <div class="history">
+            <h3>📜 Prediction History</h3>
+            <ul>
+                {% for item in history %}
+                <li>
+                    <strong>{{ item.text }}</strong><br>
+                    <span class="hist-result">{{ item.label }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
