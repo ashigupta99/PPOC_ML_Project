@@ -1,14 +1,17 @@
 import streamlit as st
 import torch
 import pickle
-from transformers import BertForSequenceClassification, BertTokenizerFast
 import os
-from dotenv import load_dotenv
 import requests
 import base64
+from dotenv import load_dotenv
+from transformers import BertForSequenceClassification, BertTokenizerFast
 from huggingface_hub import hf_hub_download
 
-# Load custom CSS + background
+# Set base path (important for deployment!)
+BASE_PATH = os.path.dirname(__file__)
+
+# Load CSS and background
 def load_css_with_bg(css_path, bg_path):
     with open(bg_path, "rb") as f:
         bg_data = base64.b64encode(f.read()).decode()
@@ -17,15 +20,19 @@ def load_css_with_bg(css_path, bg_path):
     css = css.replace("{{bg_image}}", bg_data)
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
-load_css_with_bg("assets/styles.css", "backgrounds/news_bg1.jpg")
-load_dotenv()  # Load .env if running locally
+# Use full paths
+css_path = os.path.join(BASE_PATH, "assets", "styles.css")
+bg_path = os.path.join(BASE_PATH, "backgrounds", "news_bg1.jpg")
+load_css_with_bg(css_path, bg_path)
 
-# Load model, tokenizer, and temperature
+# Load environment variables
+load_dotenv()
+
+# Load model, tokenizer and temperature
 @st.cache_resource
 def load_model_and_tokenizer():
     model = BertForSequenceClassification.from_pretrained("aashi219/fake-news-bert")
     tokenizer = BertTokenizerFast.from_pretrained("aashi219/fake-news-bert")
-    
     temp_path = hf_hub_download(
         repo_id="aashi219/fake-news-bert",
         filename="temperature.pkl",
@@ -41,14 +48,14 @@ def load_model_and_tokenizer():
 
 model, tokenizer, optimal_temp, device = load_model_and_tokenizer()
 
-# Load Gemini API Key
+# Load Gemini API key
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    st.warning("Google Gemini API key not found. Please set GEMINI_API_KEY as an environment variable.")
+    st.warning("🔑 Google Gemini API key not found. Please set GEMINI_API_KEY as an environment variable.")
 
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
-# Make prediction using temperature
+# Predict with temperature scaling
 def predict_with_temperature(text):
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=256)
     inputs = {k: v.to(device) for k, v in inputs.items()}
@@ -69,15 +76,10 @@ def gemini_llm_explanation(headline):
         "and provide reasoning. If the claim is plausible, speculative, or known to be false, mention that.\n\n"
         f"Headline: \"{headline}\"\nExplanation:"
     )
-    headers = {
-        "Content-Type": "application/json"
-    }
+    headers = {"Content-Type": "application/json"}
     data = {
         "contents": [
-            {
-                "role": "user",
-                "parts": [{"text": prompt}]
-            }
+            {"role": "user", "parts": [{"text": prompt}]}
         ]
     }
     try:
@@ -90,7 +92,7 @@ def gemini_llm_explanation(headline):
     except Exception as e:
         return None, str(e)
 
-# Adjust confidence based on LLM uncertainty
+# Adjust confidence if LLM is uncertain
 def adjust_confidence_with_llm(confidence, explanation):
     uncertain_keywords = [
         "partially", "uncertain", "incorrect", "not confirmed",
@@ -103,7 +105,7 @@ def adjust_confidence_with_llm(confidence, explanation):
             return max(confidence * 0.6, 0.5)
     return confidence
 
-# UI
+# App UI
 st.markdown('<div class="news-main-card">', unsafe_allow_html=True)
 
 with st.container():
