@@ -1,0 +1,95 @@
+.stApp {
+    background-image: url("data:image/jpg;base64,{{bg_image}}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+@media (max-width: 600px) {
+    .news-main-card {
+        padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+        max-width: 98vw;
+    }
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+.news-title {
+    font-family: 'Merriweather', serif;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 2px 8px #2228;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background-color: white;
+}
+
+.news-subtitle {
+    color: #000000;
+    font-size: 1.08rem;
+    margin-bottom: 1.1rem;
+    text-align: center;
+    font-family: 'Merriweather', serif;
+    background-color: white;
+}
+
+.stTextInput>div>div>input {
+    background: #000000;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1.07rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    background-color: white;
+}
+
+.stButton>button {
+    background-color: #e63946;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 0.6em 1.5em;
+    font-size: 1.08rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+    margin-top: 0.2rem;
+}
+
+.stButton>button:hover {
+    background-color: #a4161a;
+    color: white;
+}
+
+.confidence-info {
+    font-size: 1.08rem;
+    color: black;
+    margin-bottom: 0.9rem;
+    margin-top: 0.6rem;
+    background-color: #fffdfd;    
+}
+
+.llm-explanation {
+    background: rgba(241,250,238,0.98);
+    border-left: 5px solid #457b9d;
+    padding: 0.8rem 1rem 0.8rem 1.3rem;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    margin-bottom: 0.7rem;
+    color: #22223b;
+    box-shadow: 0 1px 6px 0 rgba(31,38,135,0.06);
+}
+
+.stAlert {
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+}
