@@ -109,7 +109,7 @@ def adjust_confidence_with_llm(confidence, explanation):
 st.markdown('<div class="news-main-card">', unsafe_allow_html=True)
 
 with st.container():
-    st.markdown('<div class="news-title"><span style="font-size:1.7rem;">📰</span> Fake News Detector</div>', unsafe_allow_html=True)
+    st.markdown('<div class="news-title"><span style="font-size:1.7rem;">📰</span> Fake News Detector!!</div>', unsafe_allow_html=True)
     st.markdown('<div class="news-subtitle">BERT + Google Gemini LLM (for explanation)</div>', unsafe_allow_html=True)
 
     user_input = st.text_area("Paste a news headline or article:")
