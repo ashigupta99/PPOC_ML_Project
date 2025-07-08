@@ -1,3 +1,4 @@
+/* 🔳 Background setup */
 .stApp {
     background-image: url("data:image/jpg;base64,{{bg_image}}");
     background-size: cover;
@@ -6,6 +7,7 @@
     background-attachment: fixed;
 }
 
+/* 🔳 Responsive layout */
 @media (max-width: 600px) {
     .news-main-card {
         padding: 1.2rem 0.5rem 1.2rem 0.5rem;
@@ -13,11 +15,13 @@
     }
 }
 
+/* 🔳 Fade animation */
 @keyframes fadein {
     from { opacity: 0; transform: translateY(30px);}
     to { opacity: 1; transform: translateY(0);}
 }
 
+/* 🔳 Title and subtitle */
 .news-title {
     font-family: 'Merriweather', serif;
     font-size: 2.2rem;
@@ -41,16 +45,17 @@
     background-color: white;
 }
 
+/* 🔳 Text Input */
 .stTextInput>div>div>input {
-    background: #000000;
+    background: #ffffff;
     border-radius: 8px;
     border: 1px solid #ccc;
     font-size: 1.07rem;
     margin-bottom: 0.5rem;
-    color: #ffffff;
-    background-color: white;
+    color: #000000;
 }
 
+/* 🔳 Button */
 .stButton>button {
     background-color: #e63946;
     color: white;
@@ -69,14 +74,19 @@
     color: white;
 }
 
+/* 🔳 Prediction confidence block */
 .confidence-info {
     font-size: 1.08rem;
     color: black;
     margin-bottom: 0.9rem;
     margin-top: 0.6rem;
     background-color: #fffdfd;    
+    padding: 0.6rem 1rem;
+    border-left: 5px solid #8884d8;
+    border-radius: 6px;
 }
 
+/* 🔳 Gemini explanation box */
 .llm-explanation {
     background: rgba(241,250,238,0.98);
     border-left: 5px solid #457b9d;
@@ -88,8 +98,22 @@
     box-shadow: 0 1px 6px 0 rgba(31,38,135,0.06);
 }
 
+/* 🔳 Warning and alerts */
 .stAlert {
     border-radius: 8px;
     background-color: white;
     color: black;
+}
+
+/* 🔳 Uncertain block */
+.uncertain {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 6px solid #ffc107;
+    padding: 10px 16px;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    font-family: 'Merriweather', serif;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
 }
