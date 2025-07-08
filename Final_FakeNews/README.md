@@ -20,7 +20,7 @@ Run locally at: http://localhost:8501
 📦 Installation
 
 1. Clone the repo
-git clone https://github.com/your-repo/fake-news-detector.git
+git clone ...
 cd fake-news-detector
 
 2. Install dependencies
