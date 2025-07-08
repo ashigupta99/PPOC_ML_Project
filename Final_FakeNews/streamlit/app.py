@@ -120,10 +120,27 @@ with st.container():
             with st.spinner("Getting LLM explanation..."):
                 explanation, error = gemini_llm_explanation(user_input)
             adj_conf = adjust_confidence_with_llm(conf, explanation)
-            st.markdown(f'<div class="confidence-info"><b>Prediction:</b> {label} <b>(Confidence:</b> {adj_conf*100:.1f}%)</div>', unsafe_allow_html=True)
+
+            # Override label to 'Uncertain' if confidence is low
+            if adj_conf < 0.65:
+                label = "Uncertain"
+
+            st.markdown(
+                f'<div class="confidence-info"><b>Prediction:</b> {label} '
+                f'<b>(Confidence:</b> {adj_conf*100:.1f}%)</div>',
+                unsafe_allow_html=True
+            )
+
+            if label == "Uncertain":
+                st.markdown(
+                    '<div class="uncertain">⚠️ Model is unsure about this news. '
+                    'Please verify it from trusted sources.</div>',
+                    unsafe_allow_html=True
+                )
+
             if explanation:
                 st.markdown(f'<div class="llm-explanation"><b>LLM says:</b> {explanation}</div>', unsafe_allow_html=True)
-                if adj_conf < conf:
+                if adj_conf < conf and label != "Uncertain":
                     st.info("Confidence reduced due to detected uncertainty or partial correctness in LLM explanation.")
             else:
                 st.error("LLM explanation unavailable.")
