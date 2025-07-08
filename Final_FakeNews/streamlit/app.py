@@ -92,19 +92,6 @@ def gemini_llm_explanation(headline):
     except Exception as e:
         return None, str(e)
 
-# Adjust confidence if LLM is uncertain
-def adjust_confidence_with_llm(confidence, explanation):
-    uncertain_keywords = [
-        "partially", "uncertain", "incorrect", "not confirmed",
-        "plausible", "speculative", "rumor", "unverified", "not entirely accurate",
-        "may be", "possibly", "could be", "mixed", "disputed", "debated"
-    ]
-    if explanation:
-        explanation_lower = explanation.lower()
-        if any(word in explanation_lower for word in uncertain_keywords):
-            return max(confidence * 0.6, 0.5)
-    return confidence
-
 # App UI
 st.markdown('<div class="news-main-card">', unsafe_allow_html=True)
 
@@ -119,11 +106,20 @@ with st.container():
             label, conf = predict_with_temperature(user_input)
             with st.spinner("Getting LLM explanation..."):
                 explanation, error = gemini_llm_explanation(user_input)
-            adj_conf = adjust_confidence_with_llm(conf, explanation)
 
-            # Override label to 'Uncertain' if confidence is low
-            if adj_conf < 0.65:
-                label = "Uncertain"
+            adj_conf = conf  # By default, no adjustment
+
+            # Override label only if LLM shows doubt
+            if explanation:
+                explanation_lower = explanation.lower()
+                uncertain_keywords = [
+                    "may be", "possibly", "could be", "uncertain", "rumor", "speculative",
+                    "not confirmed", "partially true", "mixed", "unverified", "debated", "expected", "prediction"
+                ]
+                if any(word in explanation_lower for word in uncertain_keywords):
+                    adj_conf = max(conf * 0.6, 0.5)
+                    if adj_conf < 0.65:
+                        label = "Uncertain"
 
             st.markdown(
                 f'<div class="confidence-info"><b>Prediction:</b> {label} '
@@ -133,15 +129,15 @@ with st.container():
 
             if label == "Uncertain":
                 st.markdown(
-                    '<div class="uncertain">⚠️ Model is unsure about this news. '
-                    'Please verify it from trusted sources.</div>',
+                    '<div class="uncertain">⚠️ This news appears speculative or uncertain. '
+                    'Please verify using reliable sources.</div>',
                     unsafe_allow_html=True
                 )
 
             if explanation:
                 st.markdown(f'<div class="llm-explanation"><b>LLM says:</b> {explanation}</div>', unsafe_allow_html=True)
                 if adj_conf < conf and label != "Uncertain":
-                    st.info("Confidence reduced due to detected uncertainty or partial correctness in LLM explanation.")
+                    st.info("Confidence reduced based on speculative language found in LLM explanation.")
             else:
                 st.error("LLM explanation unavailable.")
                 st.code(error)
